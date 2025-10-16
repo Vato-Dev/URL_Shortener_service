@@ -1,24 +1,24 @@
-using System.Runtime.ConstrainedExecution;
 using Domain.ValueObjects;
 
-namespace Domain;
+namespace Domain.Models;
 
 public sealed class ShortUrl
 {
-    private DateTime? _LastClickedAt;
+    private DateTime? _lastClickedAt;
     public Guid Id { get; init; }
-    public Guid OriginalUrlId { get; init; }
-    public UrlCode ShortUrlCode { get; private set; }
+    public Guid RegularUrlId { get; init; }
+    public UrlCode ShortUrlCode { get; private set; } = null!;
     public DateTime CreatedAt {get; init; }
     public DateTime? LastClickedAt
     {
-        get => _LastClickedAt;
-        private set => _LastClickedAt = value ?? DateTime.UtcNow.AddDays(30);
+        get => _lastClickedAt;
+        private set => _lastClickedAt = value ?? DateTime.UtcNow.AddDays(30);
     }
-    private string? Alias { get; init; }
+    public string? Alias { get; init; }
+    public string? NormalizedAlias { get; private set; }
     public bool HasAlias => !string.IsNullOrEmpty(Alias);
     public long ClickCount { get;private  set; } //make a logic with redis + flush job (every 15 minutes update db , not critical)
-    
+
     private ShortUrl()
     {
     }
@@ -28,11 +28,12 @@ public sealed class ShortUrl
         var url = new ShortUrl
         {
             Id = Guid.NewGuid(),
-            OriginalUrlId = originalUrlId,
+            RegularUrlId = originalUrlId,
             ShortUrlCode = UrlCode.GenerateCode(),
             CreatedAt = DateTime.UtcNow,
             LastClickedAt = DateTime.UtcNow.AddDays(30),
             Alias = alias,
+            NormalizedAlias = alias?.ToLowerInvariant(),
             ClickCount = 0
         };
         return url;

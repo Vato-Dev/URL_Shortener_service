@@ -10,7 +10,9 @@ public sealed record UrlCode
     {
         Value = value;
     }
-    internal static UrlCode Create(string value)
+    public static explicit operator  string(UrlCode urlCode)
+        => urlCode.Value; 
+    public static UrlCode Create(string value) //i am not sure but throwing exceptions there maybe is not a good idea.
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Code cannot be empty.");
