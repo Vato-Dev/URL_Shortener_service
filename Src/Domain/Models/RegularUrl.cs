@@ -1,14 +1,18 @@
 namespace Domain.Models;
-    public sealed class RegularUrl
+    public sealed class RegularUrl // maybe should be a value object ,but because of lack logic rn i can't decide
     {
-        public Guid Id { get; init; }
-        public string UrlString { get; set; }
-        public DateTime CreatedAt { get; init; }
-
         public RegularUrl(string urlString)
         {
-            Id = Guid.NewGuid();
             UrlString = urlString;
-            CreatedAt = DateTime.UtcNow;
+            NormalizedUrlString = urlString.ToLowerInvariant();
         }
+
+        public Guid Id { get; init; } = Guid.NewGuid();
+        public string UrlString { get; init; }
+        public string NormalizedUrlString {get; init; }
+        public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+
+      
+        
+        
     }
