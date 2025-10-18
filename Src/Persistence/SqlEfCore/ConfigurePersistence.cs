@@ -1,7 +1,9 @@
 using Application;
+using Application.Abstractions;
 using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.SqlEfCore.RepoImplementations;
 
 namespace Persistence.SqlEfCore;
 
@@ -11,6 +13,12 @@ public class ConfigurePersistence : ConfigurationBase
     {
         services.AddDbContext<AppDbContext>(builder =>
         {
+            if (IsDevelopment)
+            {
+                builder.EnableDetailedErrors();
+                builder.EnableSensitiveDataLogging();
+            }
+
             var dbFilePath = "DB__PATH".FromEnvRequired();  
             var dbDirectory = Path.GetDirectoryName(dbFilePath)!;
 
@@ -24,6 +32,10 @@ public class ConfigurePersistence : ConfigurationBase
             
         });
         
+        
+        services.AddScoped<IRegularUrlRepository, RegularUrlRepository>();
+        services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
+        //services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
     }
 
 }

@@ -1,10 +1,13 @@
 using System.Reflection;
+using Domain.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
 public abstract class ConfigurationBase 
 {
+    protected static bool IsDevelopment => "ASPNETCORE_ENVIRONMENT".FromEnv("Development") == "Development";
+
     public abstract void ConfigureServices(IServiceCollection services);
 
     public static void ConfigureServicesFromAssemblies(IServiceCollection services, IEnumerable<string> assemblies)

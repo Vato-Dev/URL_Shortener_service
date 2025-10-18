@@ -1,5 +1,3 @@
-using System.Reflection;
-using Domain;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Persistence.SqlEfCore.ValueConverters;
@@ -14,7 +12,9 @@ public sealed class AppDbContext(DbContextOptions options) : DbContext(options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load(nameof(Persistence)));
+        
+        //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load(nameof(Persistence)));
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         modelBuilder.ApplyUtcDateTimeConverter();
         modelBuilder.ApplyGuidToByteArrayConverter();
         base.OnModelCreating(modelBuilder);
@@ -60,3 +60,22 @@ public static class ModelBuilderConvertersExtensions
         }
     }
 }
+/*
+//FOR DEVELOP
+public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+{
+    public AppDbContext CreateDbContext(string[] args)
+    {
+
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        var dbDirectory = Path.GetDirectoryName("G:/C#projects/PRACTICE/URL_Shortener_service/.data/app.db")!;
+
+        var directory = new DirectoryInfo(dbDirectory);
+        if (!directory.Exists)
+            directory.Create();
+        optionsBuilder.UseSqlite("Data Source=G:/C#projects/PRACTICE/URL_Shortener_service/.data/app.db",
+            sqliteOptions => sqliteOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+
+        return new AppDbContext(optionsBuilder.Options);
+    }
+}*/
