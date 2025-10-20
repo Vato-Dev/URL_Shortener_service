@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Serilog;
 using ValidationException = FluentValidation.ValidationException;
 using DataAnnotationsValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
@@ -32,7 +33,7 @@ internal sealed class RequestValidationBehaviour<TRequest, TResponse>(IServicePr
                 .Where(f => f is not null)
                 .ToList();
 
-            //Log.Warning("Validation failed for request {RequestName} {Request} with errors {Errors}", request.GetType().Name, request, string.Join(';', failures));
+            Log.Warning("Validation failed for request {RequestName} {Request} with errors {Errors}", request.GetType().Name, request, string.Join(';', failures));
 
             throw new ValidationException(failures);
         }
