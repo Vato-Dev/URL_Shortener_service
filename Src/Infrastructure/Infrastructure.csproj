@@ -7,7 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="BackgroundJobs\" />
+      <Folder Include="Servises\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.15.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Application\Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="JetBrains.ReSharper.TestRunner.Merged">
+        <HintPath>C:\Program Files\JetBrains\Rider\r2r\2025.1.0R\D8D0D7F09E140047E149446E92CE830\TestRunner\netcoreapp3.0\JetBrains.ReSharper.TestRunner.Merged.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

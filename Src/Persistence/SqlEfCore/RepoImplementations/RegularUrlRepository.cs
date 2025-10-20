@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.SqlEfCore.RepoImplementations;
 
-public class RegularUrlRepository(AppDbContext context) : BaseRepository<RegularUrl, Guid>(context), IRegularUrlRepository
+public sealed class RegularUrlRepository(AppDbContext context) : BaseRepository<RegularUrl, Guid>(context), IRegularUrlRepository
 {
     private readonly AppDbContext _context = context;
 

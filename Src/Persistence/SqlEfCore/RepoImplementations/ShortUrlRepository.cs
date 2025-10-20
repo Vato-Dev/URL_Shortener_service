@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.SqlEfCore.RepoImplementations;
 
-public class ShortUrlRepository(AppDbContext context) : BaseRepository<ShortUrl,Guid>(context), IShortUrlRepository
+public sealed class ShortUrlRepository(AppDbContext context) : BaseRepository<ShortUrl,Guid>(context), IShortUrlRepository
 {
     private readonly AppDbContext _context = context;
 
@@ -13,4 +13,10 @@ public class ShortUrlRepository(AppDbContext context) : BaseRepository<ShortUrl,
         var normalizedAlias = alias.ToLowerInvariant();
       return await _context.ShortUrls.AnyAsync(x=>x.NormalizedAlias == normalizedAlias, ct);
     }
+    
+    public async Task<int> DeleteExpiredUrlsAsync(DateTime expiredFrom, CancellationToken ct)
+        => 
+        await _context.ShortUrls
+            .Where(url=> (url.LastClickedAt??url.CreatedAt) < expiredFrom)
+            .ExecuteDeleteAsync(ct);
 }

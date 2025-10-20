@@ -1,0 +1,22 @@
+using Application;
+using Infrastructure.BackgroundJobs;
+using Microsoft.Extensions.DependencyInjection;
+using Quartz;
+
+namespace Infrastructure;
+
+public class Configurations : ConfigurationBase 
+{
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddQuartz(q =>
+        {
+            q.AddJob<DeleteExpiredShortUrlsSheduledJob>(DeleteExpiredShortUrlsSheduledJob.Key, job => job.StoreDurably())
+                .AddTrigger(trigger => trigger
+                    .ForJob(DeleteExpiredShortUrlsSheduledJob.Key)
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithInterval(TimeSpan.FromHours(48))
+                        .RepeatForever()));
+        });
+    }
+}
