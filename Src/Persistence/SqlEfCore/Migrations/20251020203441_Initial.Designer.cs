@@ -11,7 +11,7 @@ using Persistence.SqlEfCore;
 namespace Persistence.SqlEfCore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251017220253_Initial")]
+    [Migration("20251020203441_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

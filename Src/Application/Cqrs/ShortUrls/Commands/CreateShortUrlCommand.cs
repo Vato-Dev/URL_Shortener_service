@@ -5,16 +5,14 @@ using FluentValidation;
 using MediatR;
 
 namespace Application.Cqrs.ShortUrls.Commands;
-public sealed record ShortUrlDto(
-    Guid Id, 
-    string ShortCode, 
-    string FinalUrl
-);
-public sealed record CreateShortUrlCommand : IRequest<ShortUrlDto>
+
+public abstract record ShortUrlCreationResult
 {
-    public Guid OriginalUrlId { get; init; } 
-    public string? Alias { get; init; }
+    public sealed record Success (Guid Id, string ShortCode,string FinalUrl) : ShortUrlCreationResult ;
+    public sealed record Failure(IEnumerable<string> Errors) : ShortUrlCreationResult;
 }
+
+public sealed record CreateShortUrlCommand(Guid OriginalUrlId, string? Alias) : IRequest<ShortUrlCreationResult>;
 
 public sealed class CreateShortUrlCommandValidator: AbstractValidator<CreateShortUrlCommand>
 {
@@ -24,16 +22,22 @@ public sealed class CreateShortUrlCommandValidator: AbstractValidator<CreateShor
         RuleFor(x => x.Alias)
             .MaximumLength(50);
         RuleFor(x => x.Alias)
+            .MaximumLength(50)
             .MustAsync(async (alias, ct) =>
             {
-                var aliasExists = await repository.IsAliasTaken(alias!, ct);
+                if (string.IsNullOrWhiteSpace(alias))
+                    return true;
+
+                var aliasExists = await repository.IsAliasTaken(alias, ct);
                 return !aliasExists;
-            }).When(x => x.Alias is not null).WithMessage($"Alias is already taken");
+            })
+            .WithMessage("Alias is already taken");
+            
     }
 }
 
-internal sealed class CreateShortUrlCommandHandler(IShortUrlRepository repository) : IRequestHandler<CreateShortUrlCommand, ShortUrlDto>{
-    public async Task<ShortUrlDto> Handle(CreateShortUrlCommand request, CancellationToken cancellationToken)
+internal sealed class CreateShortUrlCommandHandler(IShortUrlRepository repository) : IRequestHandler<CreateShortUrlCommand, ShortUrlCreationResult>{
+    public async Task<ShortUrlCreationResult> Handle(CreateShortUrlCommand request, CancellationToken cancellationToken)
     {
         var schemeName = "URL__SCHEME_NAME".FromEnv() ?? "https"; 
         var hostName = "URL__Host_Name".FromEnvRequired();
@@ -49,11 +53,7 @@ internal sealed class CreateShortUrlCommandHandler(IShortUrlRepository repositor
             Path = urlPathSegment 
         }.ToString();
 
-        return new ShortUrlDto(
-            shortUrl.Id, 
-            shortUrl.ShortUrlCode.Value, 
-            finalUrlString
-        );
+        return new ShortUrlCreationResult.Success(shortUrl.Id, shortUrl.ShortUrlCode.Value, finalUrlString);
     }
 }
 
