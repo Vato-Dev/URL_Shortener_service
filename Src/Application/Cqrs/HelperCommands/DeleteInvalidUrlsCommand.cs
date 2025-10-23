@@ -15,8 +15,8 @@ internal class DeleteInvalidUrlsCommandHandler(IShortUrlRepository repository, I
     {
         var expiredFrom = DateTime.UtcNow.AddDays(-30);
         
-        var (countOfDeletedShortUrls,regularUrlId) = await repository.DeleteExpiredUrlsAsync(expiredFrom,cancellationToken);
-        var countOfDeletedRegularUrls =  await regularUrlRepository.DeleteAllOrphanUrls(regularUrlId,cancellationToken);
+        var countOfDeletedShortUrls= await repository.DeleteExpiredUrlsAsync(expiredFrom,cancellationToken);
+        var countOfDeletedRegularUrls =  await regularUrlRepository.DeleteAllOrphanUrls(cancellationToken);
         return (countOfDeletedShortUrls , countOfDeletedRegularUrls);
     }
 }

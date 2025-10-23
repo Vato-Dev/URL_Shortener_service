@@ -16,10 +16,10 @@ public sealed class RegularUrlRepository(AppDbContext context) : BaseRepository<
         return result;
     }
 
-    public async Task<int> DeleteAllOrphanUrls(List<Guid> ids, CancellationToken ct)
+    public async Task<int> DeleteAllOrphanUrls(CancellationToken ct)
     {
       var result =  await _context.RegularUrls
-            .Where(r => ids.Contains(r.Id))
+            //.Where(r => ids.Contains(r.Id))
             .Where(r => !_context.ShortUrls.Any(s => s.RegularUrlId == r.Id))
             .ExecuteDeleteAsync(ct);
       return result;
