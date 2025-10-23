@@ -29,7 +29,7 @@ public sealed class ShortUrl
             CreatedAt = DateTime.UtcNow,
             LastClickedAt = null,
             Alias = alias,
-            NormalizedAlias = alias?.ToLowerInvariant()
+            NormalizedAlias = string.IsNullOrWhiteSpace(alias) ? null : alias.ToLowerInvariant()
         };
         return url;
     }
