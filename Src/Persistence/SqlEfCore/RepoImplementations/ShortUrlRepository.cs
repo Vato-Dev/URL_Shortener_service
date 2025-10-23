@@ -21,6 +21,5 @@ public sealed class ShortUrlRepository(AppDbContext context) : BaseRepository<Sh
             .ExecuteDeleteAsync(ct);
         return count;
     }
-    public async Task<ShortUrl?> GetByIdAsync(Guid id, CancellationToken ct) =>
-        await context.ShortUrls.FirstOrDefaultAsync(url => url.Id == id, ct);
+
 }

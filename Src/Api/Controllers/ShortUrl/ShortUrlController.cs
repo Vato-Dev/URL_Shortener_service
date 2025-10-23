@@ -1,5 +1,6 @@
 using Application.Cqrs.RegularUrls;
 using Application.Cqrs.ShortUrls.Commands;
+using Application.Cqrs.ShortUrls.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,20 @@ public class ShortUrlController(ISender sender) : ControllerBase
     {
         var result = await sender.Send(new UpdateShortUrlCommand(id));
         return result is ShortUrlUpdateResult.Success ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpGet("GetOne")]
+    public async Task<IActionResult> GetShortUrl([FromQuery] GetShortUrlQuery request)
+    {
+        var result = await sender.Send(new GetShortUrlQuery(request.Id));
+        return result.IsSuccess ? Ok(result.Data) : BadRequest(result);
+    }
+
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAllShortUrls()
+    {
+        var result = await sender.Send(new GetAllShortUrlQuery());
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }
 
