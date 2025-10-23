@@ -13,5 +13,11 @@ public class RegularUrlConfiguration : IEntityTypeConfiguration<RegularUrl>
     
         builder.Property(x=>x.NormalizedUrlString).HasMaxLength(2048).IsRequired();
         builder.HasIndex(x=>x.NormalizedUrlString).IsUnique();
+        
+            /*builder.HasMany<ShortUrl>("_shortUrls")
+            .WithOne()  
+            .HasForeignKey(s => s.RegularUrlId)
+            .OnDelete(DeleteBehavior.Restrict);*/
+        
     }
 }

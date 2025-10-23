@@ -13,10 +13,19 @@ public sealed class ShortUrlRepository(AppDbContext context) : BaseRepository<Sh
         var normalizedAlias = alias.ToLowerInvariant();
       return await _context.ShortUrls.AnyAsync(x=>x.NormalizedAlias == normalizedAlias, ct);
     }
-    
-    public async Task<int> DeleteExpiredUrlsAsync(DateTime expiredFrom, CancellationToken ct)
-        => 
-        await _context.ShortUrls
-            .Where(url=> (url.LastClickedAt??url.CreatedAt) < expiredFrom)
+
+    public async Task<(int, List<Guid>)> DeleteExpiredUrlsAsync(DateTime expiredFrom, CancellationToken ct) // violation of single responsibility i just have no f* idea how to write otherwise
+    {
+        var id = await _context.ShortUrls
+                 .Where(url => (url.LastClickedAt ?? url.CreatedAt) < expiredFrom)
+        .Select(url => url.RegularUrlId)
+        .Distinct()
+        .ToListAsync(ct);
+        
+        var count = await _context.ShortUrls
+            .Where(url => (url.LastClickedAt ?? url.CreatedAt) < expiredFrom)
             .ExecuteDeleteAsync(ct);
+        return (count, id);
+    }
+    
 }
