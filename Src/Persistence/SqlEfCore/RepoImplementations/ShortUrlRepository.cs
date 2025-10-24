@@ -7,7 +7,14 @@ namespace Persistence.SqlEfCore.RepoImplementations;
 public sealed class ShortUrlRepository(AppDbContext context) : BaseRepository<ShortUrl,Guid>(context), IShortUrlRepository
 {
     private readonly AppDbContext _context = context;
-
+    public async Task<Guid> GetOriginalUrlIdByAliasOrCode(string aliasOrCode)
+       => await _context.ShortUrls
+            .Where(x => x.Alias == aliasOrCode || x.ShortUrlCode == aliasOrCode)
+            .Select(x => x.RegularUrlId)
+            .FirstOrDefaultAsync();
+    
+    
+  
     public async Task<bool> IsAliasTaken(string alias, CancellationToken ct)
     {
         var normalizedAlias = alias.ToLowerInvariant();

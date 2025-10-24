@@ -10,20 +10,23 @@ public sealed record UrlCode
     {
         Value = value;
     }
-    public static explicit operator  string(UrlCode urlCode)
-        => urlCode.Value; 
     public static UrlCode Create(string value) //i am not sure but throwing exceptions there maybe is not a good idea.
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Code cannot be empty.");
 
-        if (value.Length < 4 || value.Length > 10)
+        if (value.Length < 3 || value.Length > 50)
             throw new ArgumentException("Code must be between 4 and 10 characters.");
 
         if (!value.All(char.IsLetterOrDigit))
             throw new ArgumentException("Code must contain only letters and digits.");
 
         return new UrlCode(value);
+    }
+
+    public static UrlCode FromDb(string value)
+    {
+        return new UrlCode(value); 
     }
     public static UrlCode GenerateCode()
     {
@@ -40,6 +43,8 @@ public sealed record UrlCode
             num/=62;
         }
         return new UrlCode(sb.ToString());
-    
     }
+    public static implicit operator string(UrlCode urlCode) => urlCode.Value;
+    public static implicit operator UrlCode(string value) => FromDb(value);
+
 }

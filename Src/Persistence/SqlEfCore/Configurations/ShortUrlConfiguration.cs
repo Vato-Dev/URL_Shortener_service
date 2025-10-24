@@ -21,10 +21,10 @@ public class ShortUrlConfiguration : IEntityTypeConfiguration<ShortUrl>
             .HasMaxLength(50);
         builder.Ignore(x => x.HasAlias);
 
-        builder.Property(x=>x.ShortUrlCode)
+        builder.Property(x => x.ShortUrlCode)
             .HasConversion(
-                urlCode=>urlCode.Value ,
-                urlCode=>UrlCode.Create(urlCode));
+                urlCode => urlCode.Value,
+                dbValue => UrlCode.FromDb(dbValue));
         
         
         builder.HasIndex(i => i.NormalizedAlias)
