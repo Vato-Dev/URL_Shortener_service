@@ -9,6 +9,12 @@
     <ItemGroup>
         <PackageReference Include="dotenv.net" Version="4.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.20"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
 
@@ -16,12 +22,6 @@
       <ProjectReference Include="..\Application\Application.csproj" />
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
       <ProjectReference Include="..\Persistence\Persistence.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="JetBrains.ReSharper.TestRunner.Merged">
-        <HintPath>C:\Program Files\JetBrains\Rider\r2r\2025.1.0R\D8D0D7F09E140047E149446E92CE830\TestRunner\netcoreapp3.0\JetBrains.ReSharper.TestRunner.Merged.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>

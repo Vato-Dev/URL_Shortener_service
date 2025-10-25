@@ -45,6 +45,7 @@ msbuild.wrn
 *.db-shm
 .logs
 *.log
+logs
 package-lock.json
 **/*.min.*
 node_modules

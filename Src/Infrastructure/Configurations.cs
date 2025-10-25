@@ -11,12 +11,13 @@ public class Configurations : ConfigurationBase
     {
         services.AddQuartz(q =>
         {
-            q.AddJob<DeleteExpiredShortUrlsSheduledJob>(DeleteExpiredShortUrlsSheduledJob.Key, job => job.StoreDurably())
+            q.AddJob<DeleteInvalidUrlsSheduledJob>(DeleteInvalidUrlsSheduledJob.Key, job => job.StoreDurably())
                 .AddTrigger(trigger => trigger
-                    .ForJob(DeleteExpiredShortUrlsSheduledJob.Key)
+                    .ForJob(DeleteInvalidUrlsSheduledJob.Key).StartAt(DateTimeOffset.Now.AddSeconds(10))
                     .WithSimpleSchedule(schedule => schedule
                         .WithInterval(TimeSpan.FromHours(48))
                         .RepeatForever()));
         });
+        services.AddQuartzHostedService();
     }
 }

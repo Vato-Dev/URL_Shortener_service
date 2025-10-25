@@ -15,4 +15,13 @@ public sealed class RegularUrlRepository(AppDbContext context) : BaseRepository<
             .FirstOrDefaultAsync(x => x.NormalizedUrlString == normalizedUrl, ct);
         return result;
     }
+
+    public async Task<int> DeleteAllOrphanUrls(CancellationToken ct)
+    {
+      var result =  await _context.RegularUrls
+            //.Where(r => ids.Contains(r.Id))
+            .Where(r => !_context.ShortUrls.Any(s => s.RegularUrlId == r.Id))
+            .ExecuteDeleteAsync(ct);
+      return result;
+    }
 }

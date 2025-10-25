@@ -9,7 +9,7 @@ public sealed class ShortUrl
     public Guid RegularUrlId { get; init; }
     public UrlCode ShortUrlCode { get; private set; } = null!;
     public DateTime CreatedAt {get; init; }
-    public DateTime? LastClickedAt { get; private set; }
+    public DateTime? LastClickedAt { get => _lastClickedAt; set => _lastClickedAt = value; }
     public string? Alias { get; init; }
     public string? NormalizedAlias { get; private set; }
     public bool HasAlias => !string.IsNullOrEmpty(Alias);
@@ -29,19 +29,20 @@ public sealed class ShortUrl
             CreatedAt = DateTime.UtcNow,
             LastClickedAt = null,
             Alias = alias,
-            NormalizedAlias = alias?.ToLowerInvariant()
+            NormalizedAlias = string.IsNullOrWhiteSpace(alias) ? null : alias.ToLowerInvariant()
         };
         return url;
     }
 
-    public bool IsExpired(DateTime currentDateTime)
+    public bool IsExpired()
     {
         var lastActive = LastClickedAt ?? CreatedAt;
-        return (currentDateTime - lastActive).TotalDays > 30;
+        return (DateTime.UtcNow - lastActive).TotalDays > 30;
     }
-    public void Click()
+    public long Click()
     {
         ClickCount++;
         _lastClickedAt = DateTime.UtcNow;
+        return ClickCount;
     }
 }

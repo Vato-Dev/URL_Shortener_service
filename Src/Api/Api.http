@@ -1,6 +1,7 @@
-@Api_HostAddress = http://localhost:5202
+@Api_HostAddress = https://localhost:7138
 
-GET {{Api_HostAddress}}/weatherforecast/
+POST {{Api_HostAddress}}/api/shortUrl
+Content-Type: application/json
 Accept: application/json
 
 ###

@@ -6,14 +6,16 @@ using MediatR;
 
 namespace Application.Cqrs.RegularUrls;
 
-public sealed class CreateRegularUrlCommand : IRequest<RegularUrl>
-{ public required string UrlString { get; init; }
+public sealed class CreateRegularUrlCommand(string urlString) : IRequest<RegularUrl>
+{
+    public string UrlString { get; init; } = urlString;
 }
 
 public sealed class CreateRegularUrlCommandValidator : AbstractValidator<CreateRegularUrlCommand>
 {
     public CreateRegularUrlCommandValidator()
     {
+        
         RuleFor(x => x.UrlString)
             .NotEmpty().WithMessage("URL cannot be empty.")
             .MinimumLength(5).WithMessage("Minimum length is 5 characters.")

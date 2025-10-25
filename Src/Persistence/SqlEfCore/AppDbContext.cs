@@ -16,7 +16,7 @@ public sealed class AppDbContext(DbContextOptions options) : DbContext(options)
         //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load(nameof(Persistence)));
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         modelBuilder.ApplyUtcDateTimeConverter();
-        modelBuilder.ApplyGuidToByteArrayConverter();
+       // modelBuilder.ApplyGuidToByteArrayConverter();
         base.OnModelCreating(modelBuilder);
     }
      
@@ -45,7 +45,7 @@ public static class ModelBuilderConvertersExtensions
         }
     }
 
-    public static void ApplyGuidToByteArrayConverter(this ModelBuilder builder)
+  /*  public static void ApplyGuidToByteArrayConverter(this ModelBuilder builder)
     {
         var toTyteConventer = new GuidToByteValueConverter();
         foreach (var entityType in builder.Model.GetEntityTypes())
@@ -58,7 +58,7 @@ public static class ModelBuilderConvertersExtensions
                 }
             }
         }
-    }
+    }*/
 }
 /*
 //FOR DEVELOP
