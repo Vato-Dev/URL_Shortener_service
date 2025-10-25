@@ -2,7 +2,7 @@ using Api;
 using Application;
 using dotenv.net;
 using FluentValidation;
-using JetBrains.Diagnostics;
+using Serilog;
 
 
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
@@ -15,8 +15,15 @@ DotEnv.Fluent()
     .WithOverwriteExistingVars()
     .Load();
 
+
 var builder = WebApplication.CreateBuilder(args);
 
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom
+    .Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
